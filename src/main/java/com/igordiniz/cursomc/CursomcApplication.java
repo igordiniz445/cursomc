@@ -9,10 +9,15 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import com.igordiniz.cursomc.domain.Categoria;
 import com.igordiniz.cursomc.domain.Cidade;
+import com.igordiniz.cursomc.domain.Cliente;
+import com.igordiniz.cursomc.domain.Endereco;
 import com.igordiniz.cursomc.domain.Estado;
 import com.igordiniz.cursomc.domain.Produto;
+import com.igordiniz.cursomc.domain.enums.TipoCliente;
 import com.igordiniz.cursomc.repository.CategoriaDao;
 import com.igordiniz.cursomc.repository.CidadeDao;
+import com.igordiniz.cursomc.repository.ClienteDao;
+import com.igordiniz.cursomc.repository.EnderecoDao;
 import com.igordiniz.cursomc.repository.EstadoDao;
 import com.igordiniz.cursomc.repository.ProdutoDao;
 
@@ -27,6 +32,10 @@ public class CursomcApplication implements CommandLineRunner {
 	private EstadoDao estadoDao;
 	@Autowired
 	private CidadeDao cidadeDao;
+	@Autowired
+	private EnderecoDao enderecoDao;
+	@Autowired
+	private ClienteDao clienteDao;
 	
 
 	public static void main(String[] args) {
@@ -52,6 +61,9 @@ public class CursomcApplication implements CommandLineRunner {
 		p3.getCategorias().addAll(Arrays.asList(cat1));
 		/*Mapeando as categorias de cada produto*/
 		
+		categoriaDao.saveAll(Arrays.asList(cat1, cat2));
+		produtoDao.saveAll(Arrays.asList(p1,p2,p3));
+		
 		Estado est1 = new Estado(null, "Minas Gerais");
 		Estado est2 = new Estado(null, "São Paulo");
 		
@@ -62,12 +74,19 @@ public class CursomcApplication implements CommandLineRunner {
 		est1.getCidade().addAll(Arrays.asList(c1));
 		est1.getCidade().addAll(Arrays.asList(c2,c3));
 		
-		categoriaDao.saveAll(Arrays.asList(cat1, cat2));
-		produtoDao.saveAll(Arrays.asList(p1,p2,p3));
-		
 		estadoDao.saveAll(Arrays.asList(est1, est2));
 		cidadeDao.saveAll(Arrays.asList(c1,c2,c3));
 		
+		Cliente cli1 = new Cliente(null, "Maria Silva", "maria@gmail.com","36378912377",TipoCliente.PESSOAFISICA);
+		cli1.getTelefones().addAll(Arrays.asList("321465214","36521478"));
+
+		Endereco e1 = new Endereco(null,"Rua FLores",300,"apto 301","Jardim","35501089", cli1, c1);
+		Endereco e2 = new Endereco(null,"Avenida Matos",105,"sala 105","Centro","38771012", cli1, c2);
+		
+		cli1.getEnderecos().addAll(Arrays.asList(e1,e2));
+		
+		clienteDao.save(cli1);
+		enderecoDao.saveAll(Arrays.asList(e1,e2));
 		
 	}
 
